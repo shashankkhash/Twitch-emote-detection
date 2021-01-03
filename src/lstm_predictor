@@ -107,18 +107,22 @@ def TWITCH_MODEL(input_shape, word_to_vec_map, word_to_index):
 
     return model
 
+if __name__ == '__main__':
+    model = TWITCH_MODEL((maxLen,), word_to_vec_map, word_to_index)
+    model.summary()
 
-model = TWITCH_MODEL((maxLen,), word_to_vec_map, word_to_index)
-model.summary()
+    optimizer = optimizers.Adam(decay=1e-4)
+    model.compile(loss='categorical_crossentropy', optimizer=optimizer, metrics=['accuracy'])
 
-optimizer = optimizers.Adam(decay=1e-4)
-model.compile(loss='categorical_crossentropy', optimizer=optimizer, metrics=['accuracy'])
+    X_train_indices = sentences_to_indices(X_train, word_to_index, maxLen)
+    Y_train_oh = convert_to_one_hot(Y_train, C=3)
 
-X_train_indices = sentences_to_indices(X_train, word_to_index, maxLen)
-Y_train_oh = convert_to_one_hot(Y_train, C=3)
+    X_test_indices = sentences_to_indices(X_test, word_to_index, max_len=maxLen)
+    Y_test_oh = convert_to_one_hot(Y_test, C=3)
 
-X_test_indices = sentences_to_indices(X_test, word_to_index, max_len=maxLen)
-Y_test_oh = convert_to_one_hot(Y_test, C=3)
+    model.fit(X_train_indices, Y_train_oh, epochs=50, validation_data=(X_test_indices, Y_test_oh), batch_size=32,
+              shuffle=True)
 
-model.fit(X_train_indices, Y_train_oh, epochs=50, validation_data=(X_test_indices, Y_test_oh), batch_size=32,
-          shuffle=True)
+
+    
+
