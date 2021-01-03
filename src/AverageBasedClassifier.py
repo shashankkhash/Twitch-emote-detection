@@ -86,6 +86,7 @@ class AverageBasedClassifier(SentimentClassifier):
                              "sentiment": sentiment,
                              "inferred": inferred})
 
+    
     def evaluate(self, twitch_data: pd.DataFrame):
         true_sentiment = list(twitch_data["sentiment"])
 
